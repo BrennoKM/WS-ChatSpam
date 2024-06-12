@@ -139,7 +139,7 @@ def on_release(key):
 
 
 global string
-string = "gId 100k por 10 brazucas discord machinex "
+string = "oiiiiiiii "
 
 
 global myEvent
