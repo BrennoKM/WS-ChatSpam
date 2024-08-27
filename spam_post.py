@@ -90,17 +90,21 @@ def digitar(string):
                 spam_scan(vk_code, shiftAcento if char in ':_+' else shift)
                 if char == 'ã':
                     spam_scan(get_vk_code('~'))
+                    time.sleep(0.02)
                     spam_scan(get_vk_code('a'), shift)
                 elif char == 'ô':
                     spam_scan(get_vk_code('^'), shiftAcento)
+                    time.sleep(0.02)
                     spam_scan(get_vk_code('o'), shift)
                 elif char == 'í':
                     spam_scan(get_vk_code('´'))
+                    time.sleep(0.02)
                     spam_scan(get_vk_code('i'), shift)
             else:
                 pass
             time.sleep(0.02)
-    
+        else:
+            break
     if myEvent.is_set():
         spam_scan(VK_RETURN)
         time.sleep(2)
@@ -151,6 +155,7 @@ def on_release(key):
                 th_spam.start()
                 print("Ligado")
             else:
+                
                 myEvent.clear()
                 print("Desligado")
         # if key == keyboard.Key.esc:
@@ -162,10 +167,17 @@ def spamar():
     while myEvent.is_set():
         digitar(string1)
         digitar(string2)
-        time.sleep(1)
+        sleep_with_check(1)
         digitar(string3)
         digitar(string4)
-        time.sleep(120)
+        sleep_with_check(120)
+
+def sleep_with_check(duration):
+    interval = 0.1  # Intervalo de verificação em segundos
+    for _ in range(int(duration / interval)):
+        if not myEvent.is_set():
+            break
+        time.sleep(interval)
 
 global string1, string2, string3, string4
 string1 = "Alô, me chama no zap 85 9813O 222O :flowergrinch::kissing:"
@@ -177,6 +189,9 @@ string4 = "Slots, licença, itens e ++ disponíveis :hw20Z_1::piggy6:"
 global myEvent
 myEvent = threading.Event()
 myEvent.clear()
+
+# th_spam = threading.Thread(target=spamar)
+# th_spam.start()
 
 th_l = threading.Thread(target=listener)
 th_l.start()
