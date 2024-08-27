@@ -63,6 +63,7 @@ VK_Ç = 0xBA #   Ç key
 
 VK_OEM_1 = 0xBF # ;:
 VK_OEM_3 = 0xDE # ~^
+VK__ = 0xBD # _ 189
 VK_SPACE = 0x20 # espaço
 VK_SHIFT = 0x10  # Shift
 VK_OEM_COMMA = 0xBC # ,<
@@ -74,42 +75,35 @@ def spam(char):
     ctypes.windll.user32.PostMessageW(hwnd, WM_KEYUP, char, 0)  # WM_KEYUP
     print("apertou")
 
+def get_vk_code(char):
+    vk_code = ctypes.windll.user32.VkKeyScanW(char)
+    return vk_code & 0xff
+
 def digitar(string):
     for char in string:
         if myEvent.is_set():
-            char_upper = char.upper()
-            if 'A' <= char_upper <= 'Z':
-                vk_code = globals()[f'VK_{char_upper}']
-                if char == char_upper:
-                    spam_scan(vk_code, True)
-                else:
-                    spam_scan(vk_code, False)
-            elif '0' <= char <= '9':
-                vk_code = globals()[f'VK_{char}']
-                spam_scan(vk_code)
-            elif ' ' == char:
-                spam_scan(VK_SPACE)
-            elif ':' == char:
-                spam_scan(VK_OEM_1, True)
-            elif 'ç' == char:
-                spam_scan(VK_Ç) 
-            elif ',' == char:
-                spam_scan(VK_OEM_COMMA)
-            elif 'ã' == char:
-                spam_scan(VK_OEM_3)
-                spam_scan(VK_A)
-            elif 'ô' == char:
-                spam_scan(VK_OEM_3, True)
-                time.sleep(0.09)
-                spam_scan(VK_O)
+            vk_code = get_vk_code(char)
+            shift = char.isupper()
+            shiftAcento = char in ':_+ãôí'
+            
+            if vk_code != -1:
+                spam_scan(vk_code, shiftAcento if char in ':_+' else shift)
+                if char == 'ã':
+                    spam_scan(get_vk_code('~'))
+                    spam_scan(get_vk_code('a'), shift)
+                elif char == 'ô':
+                    spam_scan(get_vk_code('^'), shiftAcento)
+                    spam_scan(get_vk_code('o'), shift)
+                elif char == 'í':
+                    spam_scan(get_vk_code('´'))
+                    spam_scan(get_vk_code('i'), shift)
             else:
-                # Handle other characters as needed
                 pass
             time.sleep(0.02)
+    
     if myEvent.is_set():
         spam_scan(VK_RETURN)
         time.sleep(2)
-
 
 def spam_scan(scan_code, shift = False):
     lparam_down = (1 << 0) | (scan_code << 16)
@@ -168,14 +162,17 @@ def spamar():
     while myEvent.is_set():
         digitar(string1)
         digitar(string2)
+        time.sleep(1)
         digitar(string3)
-        time.sleep(40)
+        digitar(string4)
+        time.sleep(120)
 
-global string1, string2, string3
-string1 = "Alô, me chama no zap 85 08130 2220 :flowergrinch::kissing:"
+global string1, string2, string3, string4
+string1 = "Alô, me chama no zap 85 9813O 222O :flowergrinch::kissing:"
 string2 = "Faço craft Corpo a Corpo, Longo alcance e Tecido :parrot4:"
 string3 = "Mão de obra por 50k com coins e licença incluso :gift:"
-# print(string)
+string4 = "Slots, licença, itens e ++ disponíveis :hw20Z_1::piggy6:"
+
 
 global myEvent
 myEvent = threading.Event()
