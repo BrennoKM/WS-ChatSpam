@@ -138,11 +138,11 @@ def listener():
         listener.join()
 
 def on_release(key):
-    # try:
-    #     vk_code = key.vk  # Obtém o VK code
-    #     print(f'Tecla pressionada: {key.char}, VK code: {vk_code}')
-    # except AttributeError:
-    #     print(f'Tecla especial pressionada: {key}, VK code: {key.vk}')
+    try:
+        vk_code = key.vk  # Obtém o VK code
+        print(f'Tecla pressionada: {key.char}, VK code: {vk_code}')
+    except AttributeError:
+        print(f'Tecla especial pressionada: {key}, VK code: {key.value.vk}')
     try:
         # if key.char == "k":
         #     spam(string)
@@ -173,7 +173,7 @@ def spamar():
         sleep_with_check(120)
 
 def sleep_with_check(duration):
-    interval = 0.1  # Intervalo de verificação em segundos
+    interval = 1 #Intervalo de verificação em segundos
     for _ in range(int(duration / interval)):
         if not myEvent.is_set():
             break
